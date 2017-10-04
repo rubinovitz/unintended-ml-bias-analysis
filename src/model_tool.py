@@ -24,16 +24,18 @@ DEFAULT_EMBEDDINGS_PATH = '../data/glove.6B/glove.6B.100d.txt'
 DEFAULT_MODEL_DIR = '../models'
 
 MAX_SEQUENCE_LENGTH = 250
-MAX_NUM_WORDS = 20000
+MAX_NUM_WORDS = 5000
 EMBEDDING_DIM = 100
 
 BATCH_SIZE = 128
-EPOCHS = 4
+EPOCHS = 10
 DROPOUT_RATE = 0.3
 CNN_FILTER_SIZES = [128, 128, 128]
 CNN_KERNEL_SIZES = [5,5,5]
 CNN_POOLING_SIZES = [5, 5, 40] 
 
+print('seq len: {}\nnum words: {}\nepochs: {}\ndropout: {}\n\nembedding dim: {}\nbatch size: {}\n'.format(
+    MAX_SEQUENCE_LENGTH, MAX_NUM_WORDS, EPOCHS, DROPOUT_RATE, EMBEDDING_DIM, BATCH_SIZE))
 
 def compute_auc(y_true, y_pred):
     fpr, tpr, thresholds = metrics.roc_curve(y_true, y_pred)
