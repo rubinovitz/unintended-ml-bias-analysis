@@ -2,6 +2,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+print('HELLO from model_tool')
+
 import cPickle
 import os
 import pandas as pd
@@ -21,12 +23,12 @@ from keras.models import Model
 DEFAULT_EMBEDDINGS_PATH = '../data/glove.6B/glove.6B.100d.txt'
 DEFAULT_MODEL_DIR = '../models'
 
-MAX_SEQUENCE_LENGTH = 1000
+MAX_SEQUENCE_LENGTH = 250
 MAX_NUM_WORDS = 20000
 EMBEDDING_DIM = 100
 
 BATCH_SIZE = 128
-EPOCHS = 5
+EPOCHS = 4
 DROPOUT_RATE = 0.3
 CNN_FILTER_SIZES = [128, 128, 128]
 CNN_KERNEL_SIZES = [5,5,5]
