@@ -28,7 +28,7 @@ MAX_SEQUENCE_LENGTH = 250
 MAX_NUM_WORDS = 5000
 EMBEDDING_DIM = 100
 EMBEDDING_TRAINABLE = False
-LEARNING_RATE = 0.0001
+LEARNING_RATE = 0.00005
 
 BATCH_SIZE = 128
 EPOCHS = 8
@@ -37,8 +37,8 @@ CNN_FILTER_SIZES = [128, 128, 128]
 CNN_KERNEL_SIZES = [5,5,5]
 CNN_POOLING_SIZES = [5, 5, 40]
 
-print('seq len: {}\nnum words: {}\nepochs: {}\ndropout: {}\n\nembedding dim: {}\nbatch size: {}\n'.format(
-    MAX_SEQUENCE_LENGTH, MAX_NUM_WORDS, EPOCHS, DROPOUT_RATE, EMBEDDING_DIM, BATCH_SIZE))
+print('learn rate: {}\nseq len: {}\nnum words: {}\nepochs: {}\ndropout: {}\n\nembedding dim: {}\nbatch size: {}\n'.format(
+    LEARNING_RATE, MAX_SEQUENCE_LENGTH, MAX_NUM_WORDS, EPOCHS, DROPOUT_RATE, EMBEDDING_DIM, BATCH_SIZE))
 
 def compute_auc(y_true, y_pred):
     fpr, tpr, thresholds = metrics.roc_curve(y_true, y_pred)
