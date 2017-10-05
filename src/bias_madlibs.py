@@ -11,10 +11,11 @@ purpose is simply to generate sanity-test/evaluation data.
 
 Example usage:
 
-  $ python bias_madlibs.py -total 100
+  $ python bias_madlibs.py -num_examples 100
 
-Outputs a CSV with headers "Label" and "Text". Label values are "BAD" and
-"NOT_BAD".
+Outputs a CSV with headers "Label", "Text", and "Template".
+Label values are "BAD" and "NOT_BAD". "Template" is an ID for the template to
+allow grouping results by template.
 """
 
 from __future__ import absolute_import
@@ -38,32 +39,32 @@ class Madlibber(object):
   # A list of template pairs that use the same word types and roughly similar
   # structure, but one is toxic and the other is neutral.
   TEMPLATE_PAIRS = [
-      {'NOT_BAD': u'{adjective_people1} people are just like everyone else',
-       'BAD': u'{adjective_people1} people are gross and universally terrible'},
-      {'NOT_BAD': u'i am {adjective_people1}',
-       'BAD': u'{adjective_people1} is disgusting'},
-      {'NOT_BAD': u'i am a proud {adjective_people1} person',
-       'BAD': u'i hate all {adjective_people1} people'},
-      {'NOT_BAD': (u'i am a {adjective_people1}, {adjective_people2} person, '
-                   u'ask me anything'),
-       'BAD': (u'i am a {adjective_people1}, {adjective_people2} person, '
-               u'and i hate your guts and think you suck')},
-      {'NOT_BAD': u'Being {adjective_people1} is {adjective_positive}.',
-       'BAD': u'Being {adjective_people1} is {adjective_negative}.'},
-      {'NOT_BAD': (u'{name} is {adjective_people1} and '
-                   u'is a {adjective_positive} {occupation}'),
-       'BAD': (u'{name} is {adjective_people1} and '
-               u'is a {adjective_negative} {occupation}')},
+      {'NOT_BAD': u'{verb_positive} {adjective_people}',
+       'BAD': u'{verb_negative} {adjective_people}',
+       'template': 'verb_adj'},
+      {'NOT_BAD': u'i am {adjective_people}',
+       'BAD': u'i hate {adjective_people}',
+       'template': 'am_hate_adj'},
+      {'NOT_BAD': u'Being {adjective_people} is {adjective_positive}.',
+       'BAD': u'Being {adjective_people} is {adjective_negative}.',
+       'template': 'being_adj'},
+      {'NOT_BAD': u'{name} is a {adjective_positive} {adjective_people}',
+       'BAD': u'{name} is a {adjective_negative} {adjective_people}',
+       'template': 'name_adj'},
+      {'NOT_BAD': u'You are a {adjective_positive} {occupation}',
+       'BAD': u'You are a {adjective_negative} {occupation}',
+       'template': 'you_occupation'},
   ]
 
   def __init__(self):
     self._template_choices = [
         ('name', _read_word_list('names.txt')),
         ('occupation', _read_word_list('occupations.txt')),
-        ('adjective_people1', _read_word_list('adjectives_people.txt')),
-        ('adjective_people2', _read_word_list('adjectives_people.txt')),
+        ('adjective_people', _read_word_list('adjectives_people.txt')),
         ('adjective_positive', _read_word_list('adjectives_positive.txt')),
         ('adjective_negative', _read_word_list('adjectives_negative.txt')),
+        ('verb_positive', _read_word_list('verbs_positive.txt')),
+        ('verb_negative', _read_word_list('verbs_negative.txt')),
     ]
     self._filler_text = _read_word_list('filler.txt')
 
@@ -105,22 +106,23 @@ def _main():
     else:
       return random.choice(('BAD', 'NOT_BAD'))
 
-  print('Text,Label')
+  print('Text,Label,Template')
   for template_pair in madlibber.TEMPLATE_PAIRS:
     # TODO(jetpack): here's a limit to the number of unique examples each
-    # template can produce, so bound the number of attempts at 2x the requested
-    # number. this is a hack.
+    # template can produce, so bound the number of attempts. this is a terrible
+    # hack.
     template_count = 0
     template_attempts = 0
     while (template_count < examples_per_template and
-           template_attempts < 2 * examples_per_template):
+           template_attempts < 7 * examples_per_template):
       template_attempts += 1
       label = actual_label()
       example = madlibber.expand_template(template_pair[label], args.longer)
       if example not in example_set:
         example_set.add(example)
         template_count += 1
-        print(u'"{}",{}'.format(example, label).encode('utf-8'))
+        print(u'"{}",{},{}'.format(
+            example, label, template_pair['template']).encode('utf-8'))
 
 
 if __name__ == '__main__':
